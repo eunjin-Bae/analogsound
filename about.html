@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link rel="stylesheet" href="main.css"> <!-- 스타일 연결 -->
+    <script src="src/index.js" defer></script> <!-- 스크립트 연결 -->
+</head>
+<body>
+    <!-- 로고와 햄버거 메뉴 -->
+    <div class="logo">
+        <a href="index.html">Analog Sound</a>
+    </div>
+
+    <input id="toggle" type="checkbox" />
+    <label class="hamburger" for="toggle">
+        <div class="top"></div>
+        <div class="middle"></div>
+        <div class="bottom"></div>
+    </label>
+
+    <div class="popup-menu" id="popupMenu">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- About 페이지의 내용 -->
+    <div class="about-header">
+        <img src="image/img1.jpg" alt="About Us Image" class="about-image">
+        <div class="gradient-overlay"></div> <!-- 그라데이션 추가 -->
+    </div>
+
+    <div class="about-content">
+        <h2>Who We Are</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius, nunc vel congue tincidunt, turpis elit ultricies magna, et consequat lorem sapien at lacus.</p>
+
+        <h2>Our Mission</h2>
+        <p>Praesent vel felis vel enim sollicitudin hendrerit a a velit. Integer ac velit id elit scelerisque interdum. Pellentesque quis orci elit. Sed pharetra leo vitae consectetur tristique.</p>
+    </div>
+</body>
+</html>

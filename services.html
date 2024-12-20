@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <link rel="stylesheet" href="main.css"> <!-- 공통 스타일 -->
+    <script src="src/index.js" defer></script>
+    <style>
+        /* 페이지 전체 레이아웃 */
+        .services-container {
+            display: flex;
+            flex-direction: column; /* 각 섹션을 세로로 나열 */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 개별 섹션 스타일 */
+        .service-item {
+            display: flex; /* 사진과 텍스트를 가로로 배치 */
+            align-items: center;
+            margin-bottom: 20px; /* 항목 간 간격 */
+        }
+
+        .service-item img {
+            width: 300px; /* 사진 크기 */
+            height: auto;
+            border-radius: 10px; /* 모서리 둥글게 */
+            margin-right: 20px; /* 텍스트와의 간격 */
+        }
+
+        .service-item .service-text {
+            flex: 1; /* 텍스트가 사진 옆에 자연스럽게 배치되도록 설정 */
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .service-item {
+                flex-direction: column; /* 작은 화면에서는 세로로 배치 */
+                text-align: center;
+            }
+
+            .service-item img {
+                margin: 0 0 15px 0; /* 텍스트와 간격 조정 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 및 네비게이션 -->
+    <div class="logo">
+        <a href="index.html">Analog Sound</a>
+    </div>
+
+    <input id="toggle" type="checkbox" />
+    <label class="hamburger" for="toggle">
+        <div class="top"></div>
+        <div class="middle"></div>
+        <div class="bottom"></div>
+    </label>
+
+    <div class="popup-menu" id="popupMenu">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- 서비스 페이지 컨테이너 -->
+    <div class="services-container">
+          <!-- 여백에 추가할 글 -->
+    <div class="services-intro">
+        <h2>Our Services</h2>
+        <p>Explore the wide range of services we provide, tailored to meet your needs.</p>
+    </div>
+        <!-- 1번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/1.jpg" alt="Service 1">
+            <div class="service-text">
+                <h3>Service Title 1</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.</p>
+            </div>
+        </div>
+
+        <!-- 2번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/2.jpg" alt="Service 2">
+            <div class="service-text">
+                <h3>Service Title 2</h3>
+                <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac diam sit amet quam vehicula elementum.</p>
+            </div>
+        </div>
+
+        <!-- 3번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/3.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+        <!-- 4번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/4.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+       
+       
+        <!-- 5번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/5.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+        
+        <!-- 6번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/6.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+
+        <!-- 7번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/7.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+        <!-- 8번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/8.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+        <!-- 9번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/9.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+            <!-- 10번째 서비스 -->
+        <div class="service-item">
+            <img src="images2/10.jpg" alt="Service 3">
+            <div class="service-text">
+                <h3>Service Title 3</h3>
+                <p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt.</p>
+            </div>
+        </div>
+
+        <!-- 나머지 서비스는 동일한 형식으로 추가 -->
+        <!-- 10장의 사진과 텍스트를 추가 -->
+    </div>
+</body>
+</html>

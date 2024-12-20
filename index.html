@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="main.css">
+    <title>Analog Sound</title>
+  </head>
+  <body>
+    <div class="logo">
+      <a href="index.html">Analog Sound</a>
+    </div>
+    
+    <input id="toggle" type="checkbox" />
+    <label class="hamburger" for="toggle">
+      <div class="top"></div>
+      <div class="middle"></div>
+      <div class="bottom"></div>
+    </label>
+
+    <div class="popup-menu" id="popupMenu">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="gradient-overlay"></div>
+
+    <div class="logo-container">
+        <a href="https://www.instagram.com/analog_object/profilecard/?igsh=aXg0Z2gxMHVobzl2" target="_blank" rel="noopener noreferrer" class="logo-button">
+            <img src="images/인스타로고.png" alt="Logo Button" />
+        </a>
+        <span class="logo-text">| About</span>
+    </div>
+
+    <!--여기서부터 3D-->
+    <canvas id="canvas"></canvas>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.141.0/build/three.module.js",
+            "GLTFLoader": "https://unpkg.com/three@0.141.0/examples/jsm/loaders/GLTFLoader.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import { GLTFLoader } from 'GLTFLoader';
+    import * as THREE from 'three'; 
+
+    // Scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('beige');
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix(); // 변경된 종횡비를 반영
+        renderer.setSize(window.innerWidth, window.innerHeight); // 렌더러 크기 업데이트
+    });
+
+
+    // 주석처리
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#canvas'),
+        antialias: true, // 부드럽게 렌더링
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight); // 초기 캔버스 크기 설정
+    renderer.setPixelRatio(window.devicePixelRatio); // 고해상도 디스플레이 지원
+    document.body.appendChild(renderer.domElement);
+
+    // Light
+    const ambientLight = new THREE.AmbientLight(0xFFD2A1, 0.3); // 부드러운 주변광
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xFDAD57, 1); // 따뜻한 햇빛 느낌
+    directionalLight.position.set(1.3, 1.8, 4.5); // 빛의 위치를 해가 기울어진 방향으로 설정
+    directionalLight.castShadow = true; // 그림자 활성화
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+    
+    scene.add(directionalLight);
+
+    const target = new THREE.Object3D();
+    target.position.set(1.3, 0, 2); // 타겟 위치
+    scene.add(target);
+
+    // Light의 타겟 설정
+    directionalLight.target = target;
+
+    renderer.shadowMap.enabled = true; // 그림자 활성화
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 부드러운 그림자 옵션 (선택 사항)
+
+    const pointLight = new THREE.PointLight(0xFECC97, 0.6);
+    pointLight.position.set(1, 1.5, 2);
+    scene.add(pointLight);
+    pointLight.shadow.mapSize.width = 1024;  // 그림자 맵 너비
+    pointLight.shadow.mapSize.height = 1024; // 그림자 맵 높이
+    pointLight.shadow.camera.near = 0.5; // 가까운 클리핑 거리
+    pointLight.shadow.camera.far = 30;  // 먼 클리핑 거리
+    pointLight.castShadow = true; // 그림자 활성화
+    pointLight.intensity = 0.45; // 빛의 강도를 낮추면 그림자가 더 흐려짐
+
+    const pointLight2 = new THREE.PointLight(0xFFCE99, 0.2);
+    pointLight2.position.set(4, 0, 2);
+    scene.add(pointLight2);
+
+    const pointLight3 = new THREE.PointLight(0xFFCE99, 0.2);
+    pointLight3.position.set(1, 0, -1);
+    scene.add(pointLight3);
+
+    // GLTFLoader
+    const loader = new GLTFLoader();
+    loader.load(
+        'ROOM2.gltf', // GLTF 파일 경로
+        (gltf) => {
+            const model = gltf.scene;
+            model.position.set(0, 0, 0); // 모델 위치
+            model.scale.set(0.5, 0.5, 0.5); // 모델 크기 조정
+            scene.add(model);
+
+            // 모델 내부의 모든 오브젝트에 대해 그림자 활성화
+            model.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true; // 그림자를 투영
+                    child.receiveShadow = true; // 그림자를 받음
+                }
+
+                if (child.isMesh && child.name.includes("Glass")) { // 'Window'가 이름에 포함된 오브젝트
+                    const material = child.material;
+
+                    child.material = new THREE.MeshPhysicalMaterial({
+                        color: 0x89CFF0, // 옅은 파란색
+                        transparent: true,
+                        transmission: 0.9, // 빛 투과율 (0: 불투명, 1: 완전 투명)
+                        opacity: 0.5, // 투명도
+                        roughness: 0.05, // 표면 거칠기
+                        metalness: 0.1, // 약간의 금속성
+                        ior: 1.5, // 굴절률 (유리의 굴절률: 1.5)
+                        thickness: 0.1, // 유리 두께
+                    });
+
+                }
+
+              });
+        },
+    );
+  
+    //카메라 구역 설정 및 바라볼 위치 
+    const cameraPositions = {
+        left: { position: new THREE.Vector3(1.6, 1.0, 0.5), lookAt: new THREE.Vector3(0.8, 0.5, 3.5) },
+        center: { position: new THREE.Vector3(2.5, 1.2, 0.5), lookAt: new THREE.Vector3(0.1, 0.31, 4) },
+        right: { position: new THREE.Vector3(3.1, 1.2, 2), lookAt: new THREE.Vector3(0, 0.4, 3) },
+    };
+
+    let targetPosition = cameraPositions.center.position.clone(); // 초기 카메라 위치
+    let targetLookAt = cameraPositions.center.lookAt.clone(); // 초기 바라볼 위치
+
+    const currentLookAt = new THREE.Vector3(); // 현재 바라보는 위치 저장
+
+    // 마우스 이동 이벤트
+    document.addEventListener('mousemove', (event) => {
+        if (isObjectClicked) return; // 클릭 상태일 때는 작동하지 않음
+
+        const mouseX = event.clientX;
+        const mouseY = event.clientY / window.innerHeight; // 화면 높이에 따른 Y축 비율
+        const adjustedY = (0.5 - mouseY) * 0.4; // 중앙에서 위아래로 이동 시 반전된 Y축 값
+
+        if (mouseX < window.innerWidth / 3) {
+            targetPosition.copy(cameraPositions.left.position);
+            targetLookAt.copy(cameraPositions.left.lookAt);
+        } else if (mouseX > (2 * window.innerWidth) / 3) {
+            targetPosition.copy(cameraPositions.right.position);
+            targetLookAt.copy(cameraPositions.right.lookAt);
+        } else {
+            targetPosition.copy(cameraPositions.center.position);
+            targetLookAt.copy(cameraPositions.center.lookAt);
+        }
+
+        targetLookAt.y += adjustedY; // 반전된 Y축 값 적용
+    });
+
+    // 윈도우 크기 변경 시 캔버스 크기 조정
+    window.addEventListener('resize', () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+    });
+    //--------------------------------------------------
+    const clickableMeshes = [];
+
+    // 카메라 전환 함수
+    function switchCamera(targetPosition, targetLookAt) {
+        const animationDuration = 1000; // 애니메이션 시간(ms)
+        const startPosition = camera.position.clone(); // 현재 카메라 위치
+        const startLookAt = currentLookAt.clone(); // 현재 바라보는 위치
+
+        const startTime = performance.now();
+
+        function animateCamera() {
+            const elapsedTime = performance.now() - startTime;
+            const progress = Math.min(elapsedTime / animationDuration, 1); // 진행률 (0에서 1 사이)
+
+            // 위치 및 방향 보간
+            camera.position.lerpVectors(startPosition, targetPosition, progress);
+            currentLookAt.lerpVectors(startLookAt, targetLookAt, progress);
+
+            camera.lookAt(currentLookAt);
+
+            if (progress < 1) {
+                requestAnimationFrame(animateCamera); // 애니메이션 계속
+            } else {
+                console.log(`Switched camera to position: ${targetPosition.toArray()}, looking at: ${targetLookAt.toArray()}`);
+            }
+        }
+
+        animateCamera();
+    }
+
+
+
+    // 투명 Mesh 생성 및 배치
+    function createClickableMesh(position, size, name) {
+        const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+        const material = new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0, // 투명하게 설정
+            color: 0xff0000, // 디버깅 시 눈에 보이게 색상 설정 (필요시)
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(position);
+        mesh.name = name;
+
+        scene.add(mesh);
+        clickableMeshes.push(mesh);
+
+        console.log(`Clickable mesh created: ${name}`);
+    }
+
+    let isObjectClicked = false; // 클릭 상태 플래그
+    let activeCameraPosition = null; // 현재 활성화된 카메라 위치
+
+    // 카메라 이동 함수
+    function moveCamera(targetPosition, targetLookAt) {
+        const animationDuration = 1000; // 이동 시간 (ms)
+        const startPosition = camera.position.clone();
+        const startLookAt = new THREE.Vector3();
+        camera.getWorldDirection(startLookAt); // 현재 바라보는 방향
+
+        const startTime = performance.now();
+
+        function animate() {
+            const elapsedTime = performance.now() - startTime;
+            const progress = Math.min(elapsedTime / animationDuration, 1);
+
+            // 위치와 방향 선형 보간
+            camera.position.lerpVectors(startPosition, targetPosition, progress);
+
+            const currentLookAt = new THREE.Vector3().lerpVectors(startLookAt, targetLookAt, progress);
+            camera.lookAt(currentLookAt);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // 이동 완료 후 위치 고정
+                camera.position.copy(targetPosition);
+                camera.lookAt(targetLookAt);
+                clickedCameraPosition = targetPosition.clone(); // 현재 위치 저장
+            }
+        }
+
+        animate();
+    }
+
+    // 위치별 클릭 가능한 Mesh 생성
+    createClickableMesh(new THREE.Vector3(0.79, 0.87, 3.1), new THREE.Vector3(0.15, 0.15, 0.15), 'pig');
+    createClickableMesh(new THREE.Vector3(0.755, 0.87, 2.9), new THREE.Vector3(0.15, 0.2, 0.15), 'tell');
+    createClickableMesh(new THREE.Vector3(0.72, 0.7, 2.34), new THREE.Vector3(0.17, 0.23, 0.27), 'lp');
+    createClickableMesh(new THREE.Vector3(0.6, 1.04, 1.88), new THREE.Vector3(0.04, 0.12, 0.11), 'clock');
+    createClickableMesh(new THREE.Vector3(1.22, 0.38, 1.82), new THREE.Vector3(0.1, 0.16, 0.19), 'radio');
+    createClickableMesh(new THREE.Vector3(1.005, 0.48, 2.1), new THREE.Vector3(0.16, 0.36, 0.21), 'fan');
+    createClickableMesh(new THREE.Vector3(1.5, 0.52, 2.27), new THREE.Vector3(0.16, 0.1, 0.15), 'type');
+    createClickableMesh(new THREE.Vector3(1.78, 0.27, 2.38), new THREE.Vector3(0.26, 0.1, 0.23), 'news');
+    createClickableMesh(new THREE.Vector3(1.96, 0.58, 3), new THREE.Vector3(0.4, 0.28, 0.25), 'tv');
+    createClickableMesh(new THREE.Vector3(0.59, 1.27, 2.07), new THREE.Vector3(0.04, 0.08, 0.11), 'camera');
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    let currentAudio = null; // 현재 재생 중인 오디오를 저장
+
+    // 클릭 이벤트 처리
+    document.addEventListener('click', (event) => {
+        // 마우스 위치 정규화 (-1 to +1)
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // Raycaster 설정
+        raycaster.setFromCamera(mouse, camera);
+
+        // 교차 검사
+        const intersects = raycaster.intersectObjects(clickableMeshes, true);
+
+        if (intersects.length > 0) {
+            const clickedMesh = intersects[0].object;
+            console.log(`Clicked on: ${clickedMesh.name}`);
+
+            // 클릭된 메쉬 이름에 따른 카메라 위치 전환
+            switch (clickedMesh.name) {
+                case 'pig':
+                    switchCamera(new THREE.Vector3(1.4, 1.15, 3), new THREE.Vector3(0.7, 0.85, 3.1)); // 예시 위치
+                    playSoundDelayed('sounds/pig.mp3', 1000);
+                    break;
+                case 'clock':
+                    switchCamera(new THREE.Vector3(1.1, 1.05, 1.87), new THREE.Vector3(0.9, 1.05, 1.87)); // 예시 위치
+                    playSoundDelayed('sounds/clock.mp3', 1000);
+                    break;
+                case 'tell':
+                    switchCamera(new THREE.Vector3(1.4, 1.15, 2.92), new THREE.Vector3(0.7, 0.85, 2.92)); // 예시 위치
+                    playSoundDelayed('sounds/dial.mp3', 1000);
+                    break;
+                case 'lp':
+                    switchCamera(new THREE.Vector3(1.2, 1.1, 2.37), new THREE.Vector3(0, 0.2, 2.35)); // 예시 위치
+                    playSoundDelayed('sounds/lp.mp3', 1000);
+                    break;
+                case 'fan':
+                    switchCamera(new THREE.Vector3(1.8, 0.8, 2.1), new THREE.Vector3(0.65, 0.38, 2.1)); // 예시 위치
+                    playSoundDelayed('sounds/fan.mp3', 1000);
+                    break;
+                case 'radio':
+                    switchCamera(new THREE.Vector3(1.7, 0.65, 1.8), new THREE.Vector3(1.1, 0.35, 1.8)); // 예시 위치
+                    playSoundDelayed('sounds/radio.mp3', 1000);
+                    break;
+                case 'news':
+                    switchCamera(new THREE.Vector3(1.8 , 0.8, 2.37), new THREE.Vector3(1.8, -8, 2.37)); // 예시 위치
+                    playSoundDelayed('sounds/news.mp3', 1000);
+                    break;
+                case 'tv':
+                    switchCamera(new THREE.Vector3(1.7, 0.75, 2.1), new THREE.Vector3(1.95, 0.55, 3)); // 예시 위치
+                    playSoundDelayed('sounds/tv.mp3', 1000);
+                    break;
+                case 'camera':
+                    switchCamera(new THREE.Vector3(1.1, 1.35, 2.07), new THREE.Vector3(0.6, 1.27, 2.07)); // 예시 위치
+                    playSoundDelayed('sounds/camera.mp3', 1000);
+                    break;
+                case 'type':
+                    switchCamera(new THREE.Vector3(1.5 , 1, 2.43), new THREE.Vector3(1.5, 0.3, 2.2)); // 예시 위치
+                    playSoundDelayed('sounds/type.mp3', 1000);
+                    break;
+
+                default:
+                    console.log('No specific action for this mesh');
+                    return;
+            }
+
+            isObjectClicked = true; // 클릭 상태 활성화
+        } else if (isObjectClicked) {
+            // 화면 아무 곳이나 클릭 시 기본 위치로 복귀
+            switchCamera(cameraPositions.center.position, cameraPositions.center.lookAt);
+            isObjectClicked = false; // 클릭 상태 비활성화
+            activeCameraPosition = null; // 활성화된 카메라 위치 초기화
+        }
+            // 현재 재생 중인 소리 멈춤
+          if (currentAudio) {
+              currentAudio.pause();
+              currentAudio.currentTime = 0; // 재생 위치 초기화
+              currentAudio = null; // 참조 해제
+              console.log('Sound stopped.');
+          }
+    });
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        if (!isObjectClicked) {
+            camera.position.lerp(targetPosition, 0.015); // 부드럽게 목표 위치로 이동
+            currentLookAt.lerp(targetLookAt, 0.015); // 부드럽게 바라볼 위치로 이동
+            camera.lookAt(currentLookAt);
+        }
+
+        renderer.render(scene, camera); // 매 프레임 렌더링
+    }
+
+    // 애니메이션 루프 시작
+    animate();
+
+    function playSoundDelayed(soundFile, delay = 1000) {
+        // 기존 재생 중인 소리 멈춤
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0; // 재생 위치 초기화
+        }
+
+        setTimeout(() => {
+            currentAudio = new Audio(soundFile);
+            currentAudio.play();
+            console.log(`Playing sound: ${soundFile}`);
+        }, delay);
+    }
+
+
+
+</script>
+
+  </body>
+</html>
+
