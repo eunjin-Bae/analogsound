@@ -414,8 +414,8 @@ transform: scale(0);
     .service-item {
         flex-direction: column; /* 이미지와 텍스트를 세로로 배치 */
         align-items: flex-start; /* 텍스트를 왼쪽 정렬 */
-        text-align: left; /* 텍스트 전체 왼쪽 정렬 */
-        margin-bottom: 40px; /* 섹션 간 간격 */
+        text-align: left; /* 텍스트를 왼쪽 정렬 */
+        margin-bottom: 40px; /* 항목 간 간격 */
     }
 
     .service-item img {
@@ -425,11 +425,10 @@ transform: scale(0);
     }
 
     .service-item .service-text {
-        font-size: 16px; /* 글자 크기 */
-        line-height: 1.5; /* 줄 간격 */
+        font-size: 16px; /* 글자 크기 조정 */
+        line-height: 1.5; /* 줄 간격 조정 */
     }
 }
-
 
 
 
