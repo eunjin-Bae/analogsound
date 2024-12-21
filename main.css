@@ -383,28 +383,6 @@ transform: scale(0);
   color: #333;
 }
 
-@media (max-width: 768px) {
-  .services-container {
-      margin-top: 50px; /* 컨테이너 위쪽 여백 */
-  }
 
-  .service-item {
-      flex-direction: column !important; /* 세로 정렬 강제 적용 */
-      align-items: flex-start !important; /* 텍스트 왼쪽 정렬 강제 적용 */
-      text-align: left !important; /* 텍스트 왼쪽 정렬 강제 적용 */
-      margin-bottom: 40px !important; /* 항목 간 간격 강제 적용 */
-  }
-
-  .service-item img {
-      width: 100% !important; /* 이미지 너비 강제 적용 */
-      height: auto !important; /* 이미지 비율 유지 강제 적용 */
-      margin: 0 0 15px 0 !important; /* 이미지와 텍스트 간 여백 강제 적용 */
-  }
-
-  .service-item .service-text {
-      font-size: 16px !important; /* 텍스트 크기 강제 적용 */
-      line-height: 1.5 !important; /* 줄 간격 강제 적용 */
-  }
-}
 
 
