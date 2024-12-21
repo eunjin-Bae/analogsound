@@ -23,8 +23,17 @@
           text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff; /* 반짝이는 효과 */
           white-space: nowrap; /* 텍스트가 한 줄로 유지 */
           animation: glow 1s infinite; /* 반짝임 효과 */
+          word-break: break-word; /* 단어가 너무 길 경우 줄바꿈 */
+          max-width: 90%; /* 텍스트가 뷰포트를 넘지 않도록 최대 너비 설정 */
+          overflow-wrap: break-word; /* 뷰포트 안에서 단어 줄바꿈 */
+  }
         }
-  
+          /* 모바일 화면 전용 스타일 */
+        @media screen and (max-width: 768px) {
+    #clickText {
+      font-size: calc(12px + 2vw) !important; /* 모바일 환경에서 폰트 크기 조정 */
+    }
+  }
         /* 반짝임 애니메이션 */
         @keyframes glow {
           0% { text-shadow: 0 0 5px #000000, 0 0 10px #000000; }
