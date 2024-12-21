@@ -46,13 +46,15 @@
         "imports": {
             "three": "https://unpkg.com/three@0.141.0/build/three.module.js",
             "GLTFLoader": "https://unpkg.com/three@0.141.0/examples/jsm/loaders/GLTFLoader.js"
+            "DRACOLoader": "https://unpkg.com/three@0.141.0/examples/jsm/loaders/DRACOLoader.js"
         }
     }
 </script>
 
 <script type="module">
     import { GLTFLoader } from 'GLTFLoader';
-    import * as THREE from 'three'; 
+    import * as THREE from 'three';
+    import { DRACOLoader } from 'DRACOLoader';
 
     // Scene
     const scene = new THREE.Scene();
@@ -121,8 +123,11 @@
 
     // GLTFLoader
     const loader = new GLTFLoader();
+    const dracoLoader = new THREE.DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+    loader.setDRACOLoader(dracoLoader);
     loader.load(
-        'https://aquamarine-faloodeh-325dfb.netlify.app/room2.gltf',
+        'ROOM.glb',
         (gltf) => {
             const model = gltf.scene;
             model.position.set(0, 0, 0); // 모델 위치
