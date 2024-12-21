@@ -389,21 +389,22 @@ transform: scale(0);
   }
 
   .service-item {
-      flex-direction: column; /* 이미지와 텍스트를 세로 정렬 */
-      align-items: flex-start; /* 텍스트 왼쪽 정렬 */
-      text-align: left; /* 텍스트 왼쪽 정렬 */
-      margin-bottom: 40px; /* 항목 간 간격 */
+      flex-direction: column !important; /* 세로 정렬 강제 적용 */
+      align-items: flex-start !important; /* 텍스트 왼쪽 정렬 강제 적용 */
+      text-align: left !important; /* 텍스트 왼쪽 정렬 강제 적용 */
+      margin-bottom: 40px !important; /* 항목 간 간격 강제 적용 */
   }
 
   .service-item img {
-      width: 100%; /* 이미지를 화면 너비에 꽉 차게 설정 */
-      height: auto; /* 이미지 비율 유지 */
-      margin: 0 0 15px 0; /* 이미지와 텍스트 사이 간격 */
+      width: 100% !important; /* 이미지 너비 강제 적용 */
+      height: auto !important; /* 이미지 비율 유지 강제 적용 */
+      margin: 0 0 15px 0 !important; /* 이미지와 텍스트 간 여백 강제 적용 */
   }
 
   .service-item .service-text {
-      font-size: 16px; /* 텍스트 크기 조정 */
-      line-height: 1.5; /* 줄 간격 */
+      font-size: 16px !important; /* 텍스트 크기 강제 적용 */
+      line-height: 1.5 !important; /* 줄 간격 강제 적용 */
   }
 }
+
 
