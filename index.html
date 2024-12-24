@@ -24,11 +24,11 @@
           white-space: nowrap; /* 텍스트가 한 줄로 유지 */
           animation: glow 1s infinite; /* 반짝임 효과 */
   }
-        }
+        
           /* 모바일 화면 전용 스타일 */
         @media screen and (max-width: 500px) {
     #clickText {
-      font-size: calc(8px + 2vw) !important; /* 모바일 환경에서 폰트 크기 조정 */
+      font-size: calc(10px + 2vw) !important; /* 모바일 환경에서 폰트 크기 조정 */
     }
   }
         /* 반짝임 애니메이션 */
@@ -258,29 +258,92 @@
     let targetPosition = cameraPositions.center.position.clone(); // 초기 카메라 위치
     let targetLookAt = cameraPositions.center.lookAt.clone(); // 초기 바라볼 위치
 
-    const currentLookAt = new THREE.Vector3(); // 현재 바라보는 위치 저장
+    
 
-    // 마우스 이동 이벤트
+    let currentLookAt = new THREE.Vector3(0, 0, 0); // 초기 바라보는 위치
+    let clickedCameraPosition = camera.position.clone(); // 초기 카메라 위치
+    let isDragging = false; // 드래그 상태 플래그
+    let dragStart = { x: 0, y: 0 }; // 드래그 시작 위치
+    let dragEnd = { x: 0, y: 0 }; // 드래그 종료 위치
+
+    const lookAtLimits = {
+        x: { min: -5, max: 5 }, // X축 제한
+        y: { min: -2, max: 2 }, // Y축 제한
+    };
+
+    // 값 제한 함수
+    const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+
+    // 터치 이벤트 추가
+    if (window.innerWidth <= 768) {
+        document.addEventListener('touchstart', (event) => {
+            isDragging = true;
+            const touch = event.touches[0];
+            dragStart.x = touch.clientX;
+            dragStart.y = touch.clientY;
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            if (!isDragging) return;
+
+            const touch = event.touches[0];
+            dragEnd.x = touch.clientX;
+            dragEnd.y = touch.clientY;
+
+            const deltaX = (dragEnd.x - dragStart.x) / window.innerWidth;
+            const deltaY = (dragEnd.y - dragStart.y) / window.innerHeight; // Y축: 위로 드래그하면 위로
+
+            // lookAt 업데이트
+            currentLookAt.x = clamp(currentLookAt.x + deltaX * 2, lookAtLimits.x.min, lookAtLimits.x.max);
+            currentLookAt.y = clamp(currentLookAt.y + deltaY * 2, lookAtLimits.y.min, lookAtLimits.y.max);
+
+            camera.lookAt(currentLookAt);
+
+            // 드래그 시작점 갱신
+            dragStart.x = dragEnd.x;
+            dragStart.y = dragEnd.y;
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+
+            // 드래그 종료 후 상태 유지
+            camera.lookAt(currentLookAt); // 최종 `lookAt` 값 적용
+            console.log(`Camera fixed at: ${currentLookAt.toArray()}`);
+        });
+    }
+
+    // PC 환경 마우스 이벤트 (기존 유지)
     document.addEventListener('mousemove', (event) => {
-        if (isObjectClicked) return; // 클릭 상태일 때는 작동하지 않음
+        if (window.innerWidth > 768) {
+            const mouseX = event.clientX;
+            const mouseY = event.clientY / window.innerHeight;
+            const adjustedY = (0.5 - mouseY) * 0.4;
 
-        const mouseX = event.clientX;
-        const mouseY = event.clientY / window.innerHeight; // 화면 높이에 따른 Y축 비율
-        const adjustedY = (0.5 - mouseY) * 0.4; // 중앙에서 위아래로 이동 시 반전된 Y축 값
+            if (mouseX < window.innerWidth / 3) {
+                targetPosition.copy(cameraPositions.left.position);
+                targetLookAt.copy(cameraPositions.left.lookAt);
+            } else if (mouseX > (2 * window.innerWidth) / 3) {
+                targetPosition.copy(cameraPositions.right.position);
+                targetLookAt.copy(cameraPositions.right.lookAt);
+            } else {
+                targetPosition.copy(cameraPositions.center.position);
+                targetLookAt.copy(cameraPositions.center.lookAt);
+            }
 
-        if (mouseX < window.innerWidth / 3) {
-            targetPosition.copy(cameraPositions.left.position);
-            targetLookAt.copy(cameraPositions.left.lookAt);
-        } else if (mouseX > (2 * window.innerWidth) / 3) {
-            targetPosition.copy(cameraPositions.right.position);
-            targetLookAt.copy(cameraPositions.right.lookAt);
-        } else {
-            targetPosition.copy(cameraPositions.center.position);
-            targetLookAt.copy(cameraPositions.center.lookAt);
+            targetLookAt.y += adjustedY; // Y축 반영
         }
-
-        targetLookAt.y += adjustedY; // 반전된 Y축 값 적용
     });
+
+    // 렌더링 루프
+    function render() {
+        // 현재 `lookAt` 값 유지
+        camera.lookAt(currentLookAt);
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(render);
+    }
+    render();
 
     // 윈도우 크기 변경 시 캔버스 크기 조정
     window.addEventListener('resize', () => {
@@ -321,8 +384,6 @@
 
         animateCamera();
     }
-
-
 
     // 투명 Mesh 생성 및 배치
     function createClickableMesh(position, size, name) {
@@ -510,4 +571,3 @@
 
   </body>
 </html>
-
